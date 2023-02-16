@@ -1,4 +1,5 @@
 import express from 'express';
+import router from './routes/server.js';
 
 const app = express();
 const port = 3000;
@@ -7,19 +8,12 @@ app.get('/', (req, res) => {
   res.send('Hello, this is a server in Express.js');
 });
 
-app.get('/anything', (req, res) => {
-  res.send("This is the another route's response");
-});
-
-app.get('/api', (req, res) => {
-  res.json({
-    id: 0,
-    name: 'Juan Vasquez',
-    username: 'juanvcas',
-    email: 'juanvcas96@gmail.com',
-  });
-});
-
 app.listen(port, () => {
-  console.log(`Server runing on port ${port}`);
+  console.log(`Server runing on: http://localhost:${port}`);
 });
+
+try {
+  router(app);
+} catch (err) {
+  console.error(err);
+}
