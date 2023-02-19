@@ -15,17 +15,57 @@ productsRouter.get('/', (req, res) => {
       image: faker.image.imageUrl(),
     });
   }
-  res.json(products);
+  res.status(200).json(products);
 });
 
 productsRouter.get('/:id', (req, res) => {
   const { id } = req.params;
-  res.json({
+  if (id === '555') {
+    res.status(404).json({
+      message: 'Product not found',
+    });
+  } else {
+    res.status(200).json({
+      id,
+      title: 'Some Product',
+      description: 'This is a product description...',
+      categoryId: 14,
+      price: 1500,
+    });
+  }
+});
+
+productsRouter.post('/', (req, res) => {
+  const body = req.body;
+  res.status(201).json({
+    message: 'Product created',
+    data: body,
+  });
+});
+
+productsRouter.patch('/:id', (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+  res.status(201).json({
+    message: 'updated',
+    data: body,
     id,
-    title: 'Some Product',
-    description: 'This is a product description...',
-    categoryId: 14,
-    price: 1500,
+  });
+});
+
+productsRouter.put('/', (req, res) => {
+  const body = req.body;
+  res.status(201).json({
+    message: 'updated',
+    data: body,
+  });
+});
+
+productsRouter.delete('/:id', (req, res) => {
+  const { id } = req.params;
+  res.status(204).json({
+    message: 'deleted',
+    id,
   });
 });
 

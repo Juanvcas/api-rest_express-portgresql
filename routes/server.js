@@ -5,11 +5,12 @@ import { usersRouter } from './users.js';
 
 const router = (app) => {
   const v1 = express.Router();
-  app.use('/api/v1', v1);
 
   v1.use('/products', productsRouter);
   v1.use('/categories', categoriesRouter);
   v1.use('/users', usersRouter);
+
+  app.use('/api/v1', v1);
 };
 
 export default router;
