@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import boom from '@hapi/boom';
 
 class UsersService {
   constructor() {
@@ -35,7 +36,12 @@ class UsersService {
   }
 
   async findOne(un) {
-    return this.users.find((user) => user.uname === un);
+    const user = this.users.find((user) => user.uname === un);
+    if (user) {
+      return user;
+    } else {
+      throw boom.notFound('Product not found');
+    }
   }
 
   async update(id, data) {
@@ -44,6 +50,8 @@ class UsersService {
       const user = this.users[index];
       this.users[index] = { ...user, ...data };
       return this.users[index];
+    } else {
+      throw boom.notFound('Product not found');
     }
   }
 
@@ -52,6 +60,8 @@ class UsersService {
     if (index !== -1) {
       this.users.splice(index, 1);
       return true;
+    } else {
+      throw boom.notFound("User doesn't exist");
     }
   }
 }

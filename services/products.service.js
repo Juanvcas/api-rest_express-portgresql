@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import boom from '@hapi/boom';
 import { CategoriesService } from './categories.service.js';
 
 const categories = new CategoriesService();
@@ -20,6 +21,7 @@ class ProductsService {
         category:
           allCategories[Math.floor(Math.random() * allCategories.length)],
         image: faker.image.imageUrl(),
+        available: faker.datatype.boolean(),
       });
     }
   }
@@ -38,7 +40,16 @@ class ProductsService {
   }
 
   async findOne(id) {
-    return this.products.find((product) => product.id === id);
+    const product = this.products.find((product) => product.id === id);
+    if (product) {
+      if (product.available) {
+        return product;
+      } else {
+        throw boom.conflict('Product not available');
+      }
+    } else {
+      throw boom.notFound('Product not found');
+    }
   }
 
   async update(id, changes) {
@@ -47,6 +58,8 @@ class ProductsService {
       const product = this.products[index];
       this.products[index] = { ...product, ...changes };
       return this.products[index];
+    } else {
+      throw boom.notFound('Product not found');
     }
   }
 
@@ -55,6 +68,8 @@ class ProductsService {
     if (index !== -1) {
       this.products.splice(index, 1);
       return true;
+    } else {
+      throw boom.notFound("Product doesn't exist");
     }
   }
 }

@@ -3,27 +3,25 @@ import { categories } from '../services/products.service.js';
 
 const categoriesRouter = express.Router();
 
-categoriesRouter.get('/', async (req, res) => {
+categoriesRouter.get('/', async (req, res, next) => {
   try {
     res.status(200).json(categories);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 
-categoriesRouter.get('/:id', async (req, res) => {
+categoriesRouter.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const category = await categories.findOne(id);
-    category
-      ? res.status(200).json(category)
-      : res.status(404).json({ message: 'Category not found' });
+    res.status(200).json(category);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 
-categoriesRouter.post('/', async (req, res) => {
+categoriesRouter.post('/', async (req, res, next) => {
   const body = req.body;
   try {
     const newCategory = await categories.create(body);
@@ -32,32 +30,28 @@ categoriesRouter.post('/', async (req, res) => {
       data: newCategory,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 
-categoriesRouter.patch('/:id', async (req, res) => {
+categoriesRouter.patch('/:id', async (req, res, next) => {
   const { id } = req.params;
   const body = req.body;
   try {
     const category = await categories.update(id, body);
-    category
-      ? res.status(201).json({ message: 'Category updated', data: category })
-      : res.status(404).json({ message: 'Category not found' });
+    res.status(201).json({ message: 'Category updated', data: category });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 
-categoriesRouter.delete('/:id', async (req, res) => {
+categoriesRouter.delete('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
-    const category = await categories.delete(id);
-    category
-      ? res.status(200).json({ message: 'Category deleted', data: id })
-      : res.status(404).json({ message: 'Category not found' });
+    await categories.delete(id);
+    res.status(204).json({ message: 'Category deleted', data: id });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 

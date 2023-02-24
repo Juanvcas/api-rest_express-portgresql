@@ -4,29 +4,26 @@ import { ProductsService } from '../services/products.service.js';
 const productsRouter = express.Router();
 const service = new ProductsService();
 
-productsRouter.get('/', async (req, res) => {
+productsRouter.get('/', async (req, res, next) => {
   try {
     const products = await service.find();
     res.status(200).json(products);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 
-productsRouter.get('/:id', async (req, res) => {
+productsRouter.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const product = await service.findOne(id);
-
-    product
-      ? res.status(200).json(product)
-      : res.status(404).json({ message: 'Product not found' });
+    res.status(200).json(product);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 
-productsRouter.post('/', async (req, res) => {
+productsRouter.post('/', async (req, res, next) => {
   const body = req.body;
   try {
     const newProduct = await service.create(body);
@@ -35,33 +32,28 @@ productsRouter.post('/', async (req, res) => {
       data: newProduct,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 
-productsRouter.patch('/:id', async (req, res) => {
+productsRouter.patch('/:id', async (req, res, next) => {
   const { id } = req.params;
   const body = req.body;
   try {
     const product = await service.update(id, body);
-
-    product
-      ? res.status(201).json({ message: 'Product updated', data: product })
-      : res.status(404).json({ message: 'Product not found' });
+    res.status(201).json({ message: 'Product updated', data: product });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 
-productsRouter.delete('/:id', async (req, res) => {
+productsRouter.delete('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
-    const product = await service.delete(id);
-    product
-      ? res.status(200).json({ message: 'Product deleted', data: id })
-      : res.status(404).json({ message: 'Product not found' });
+    await service.delete(id);
+    res.status(204).json({ message: 'Product deleted', data: id });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 
