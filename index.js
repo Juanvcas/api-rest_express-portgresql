@@ -1,7 +1,6 @@
 import express from 'express';
 import router from './server/server.js';
 import {
-  logErrors,
   boomErrorHandler,
   errorHandler,
 } from './middlewares/errors.handler.js';
@@ -17,10 +16,7 @@ app.get('/', (req, res) => {
 
 router(app);
 
-app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`Server runing on: http://localhost:${port}`);
-});
+app.listen(port);

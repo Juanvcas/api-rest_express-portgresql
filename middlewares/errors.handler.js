@@ -1,8 +1,3 @@
-const logErrors = (err, req, res, next) => {
-  console.error(err);
-  next(err);
-};
-
 const boomErrorHandler = (err, req, res, next) => {
   if (err.isBoom) {
     const { output } = err;
@@ -19,4 +14,4 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-export { logErrors, boomErrorHandler, errorHandler };
+export { boomErrorHandler, errorHandler };
