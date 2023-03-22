@@ -1,12 +1,10 @@
-import { pool } from '../libs/postgres.pool.js';
+import { sequelize } from '../libs/postgres.pool.js';
 import { faker } from '@faker-js/faker';
 import boom from '@hapi/boom';
 
 class UsersService {
   constructor() {
     this.users = [];
-    this.pool = pool;
-    this.pool.on('error', (err) => console.error(err));
   }
 
   async generate() {
@@ -34,9 +32,8 @@ class UsersService {
   }
 
   async find() {
-    const query = 'select * from tasks';
-    const res = await pool.query(query);
-    return res.rows;
+    const res = await sequelize.models.User.findAll();
+    return res;
   }
 
   async findOne(un) {
