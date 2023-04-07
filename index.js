@@ -3,6 +3,7 @@ import cors from 'cors';
 import router from './server/server.js';
 import {
   boomErrorHandler,
+  validationError,
   errorHandler,
 } from './middlewares/errors.handler.js';
 
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 router(app);
 
 app.use(boomErrorHandler);
+app.use(validationError);
 app.use(errorHandler);
 
 app.listen(port);

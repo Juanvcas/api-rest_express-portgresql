@@ -1,10 +1,11 @@
 import Joi from 'joi';
 
-const id = Joi.string().uuid();
+const id = Joi.string();
 const name = Joi.string().min(3);
-const uname = Joi.string().alphanum();
+const uname = Joi.string().alphanum().min(3);
 const email = Joi.string().email();
 const password = Joi.string().alphanum().min(12);
+const role = Joi.string();
 const image = Joi.string().uri();
 
 const createUserSchema = Joi.object({
@@ -12,6 +13,7 @@ const createUserSchema = Joi.object({
   uname: uname.required(),
   email: email.required(),
   password: password.required(),
+  role: role,
   image: image,
 });
 
@@ -24,6 +26,7 @@ const updateUserSchema = Joi.object({
   uname: uname,
   email: email,
   password: password,
+  role: role,
   image: image,
 });
 

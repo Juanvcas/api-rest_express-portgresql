@@ -42,7 +42,7 @@ usersRouter.post(
     try {
       const newUser = await service.create(body);
       res.status(201).json({
-        message: 'Product created',
+        message: 'User created',
         data: newUser,
       });
     } catch (err) {
@@ -60,7 +60,7 @@ usersRouter.patch(
     const body = req.body;
     try {
       const user = await service.update(id, body);
-      res.status(201).json({ message: 'Product updated', data: user });
+      res.status(201).json({ message: 'User updated', data: user });
     } catch (err) {
       next(err);
     }

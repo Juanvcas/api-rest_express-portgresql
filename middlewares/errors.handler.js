@@ -7,6 +7,18 @@ const boomErrorHandler = (err, req, res, next) => {
   }
 };
 
+const validationError = (err, req, res, next) => {
+  if (err.errors[0].type === 'unique violation') {
+    res.status(409).json({
+      type: err.errors[0].type,
+      message: err.errors[0].message,
+      detail: err.parent.detail,
+    });
+  } else {
+    next(err);
+  }
+};
+
 const errorHandler = (err, req, res, next) => {
   res.status(500).json({
     message: err.message,
@@ -14,4 +26,4 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-export { boomErrorHandler, errorHandler };
+export { boomErrorHandler, validationError, errorHandler };

@@ -1,33 +1,11 @@
 import { sequelize } from '../libs/postgres.pool.js';
-import { faker } from '@faker-js/faker';
 import boom from '@hapi/boom';
 
 class UsersService {
-  constructor() {
-    this.users = [];
-  }
-
-  async generate() {
-    for (let index = 0; index < 100; index++) {
-      this.users.push({
-        id: faker.datatype.uuid(),
-        name: faker.name.fullName(),
-        uname: faker.internet.userName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        image: faker.image.avatar(),
-      });
-    }
-  }
+  constructor() {}
 
   async create(data) {
-    const newUser = {
-      id: faker.datatype.uuid(),
-      ...data,
-    };
-
-    this.users.push(newUser);
-
+    const newUser = await sequelize.models.User.create(data);
     return newUser;
   }
 
@@ -36,33 +14,32 @@ class UsersService {
     return res;
   }
 
-  async findOne(un) {
-    const user = this.users.find((user) => user.uname === un);
+  async findOne(id) {
+    const user = await sequelize.models.User.findByPk(id);
     if (user) {
       return user;
     } else {
-      throw boom.notFound('Product not found');
+      throw boom.notFound('User not found');
     }
   }
 
   async update(id, data) {
-    const index = this.products.findIndex((item) => item.id === id);
-    if (index !== -1) {
-      const user = this.users[index];
-      this.users[index] = { ...user, ...data };
-      return this.users[index];
+    const user = await this.findOne(id);
+    if (user) {
+      const res = await user.update(data);
+      return res;
     } else {
-      throw boom.notFound('Product not found');
+      throw boom.notFound('User not found');
     }
   }
 
-  delete(id) {
-    const index = this.users.findIndex((item) => item.id === id);
-    if (index !== -1) {
-      this.users.splice(index, 1);
-      return true;
+  async delete(id) {
+    const user = await this.findOne(id);
+    if (user) {
+      const res = await user.destroy();
+      return res;
     } else {
-      throw boom.notFound("User doesn't exist");
+      throw boom.notFound('User not found');
     }
   }
 }
