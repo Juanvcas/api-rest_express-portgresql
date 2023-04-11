@@ -1,20 +1,20 @@
 import Joi from 'joi';
 
-const id = Joi.string().uuid();
+const id = Joi.number().integer();
 const title = Joi.string().min(3).max(15);
 const description = Joi.string();
 const price = Joi.number().integer().min(1);
-const category = Joi.object();
 const image = Joi.string().uri();
 const available = Joi.boolean();
+const categoryId = Joi.number().integer();
 
 const createProductSchema = Joi.object({
   title: title.required(),
   description: description,
   price: price.required(),
-  category: category,
   image: image,
   available: available.required(),
+  categoryId: categoryId.required(),
 });
 
 const findOneProductSchema = Joi.object({
@@ -25,9 +25,9 @@ const updateProductSchema = Joi.object({
   title: title,
   description: description,
   price: price,
-  category: category,
   image: image,
   available: available,
+  categoryId: categoryId,
 });
 
 const deleteProductSchema = Joi.object({

@@ -1,61 +1,47 @@
-import { faker } from '@faker-js/faker';
+import { sequelize } from '../libs/postgres.pool.js';
 import boom from '@hapi/boom';
 
 class CategoriesService {
-  constructor() {
-    this.categories = [];
-    this.generate();
-  }
-
-  async generate() {
-    for (let index = 0; index < 10; index++) {
-      this.categories.push({
-        id: faker.datatype.uuid(),
-        title: faker.commerce.department(),
-      });
-    }
-  }
+  constructor() {}
 
   async create(data) {
-    const newCategory = {
-      id: faker.datatype.uuid(),
-      ...data,
-    };
-    this.categories.push(newCategory);
+    const newCategory = await sequelize.models.Category.create(data);
     return newCategory;
   }
 
   async find() {
-    return this.categories;
+    const res = await sequelize.models.Category.findAll();
+    return res;
   }
 
   async findOne(id) {
-    const product = this.categories.find((cat) => cat.id === id);
-    if (product) {
-      return product;
+    const category = await sequelize.models.Category.findByPk(id, {
+      include: ['products'],
+    });
+    if (category) {
+      return category;
     } else {
-      throw boom.notFound('Product not found');
+      throw boom.notFound('Category not found');
     }
   }
 
   async update(id, data) {
-    const index = this.categories.findIndex((cat) => cat.id === id);
-    if (index !== -1) {
-      const category = this.categories[index];
-      this.categories[index] = { ...category, ...data };
-      return this.categories[index];
+    const category = this.findOne(id);
+    if (category) {
+      const res = await category.update(data);
+      return res;
     } else {
-      throw boom.notFound('Product not found');
+      throw boom.notFound('Category not found');
     }
   }
 
   async delete(id) {
-    const index = this.categories.findIndex((cat) => cat.id === id);
-    if (index !== -1) {
-      this.categories.splice(index, 1);
-      return true;
+    const category = this.findOne(id);
+    if (category) {
+      const res = await category.destroy();
+      return res;
     } else {
-      throw boom.notFound("Category doesn't exist");
+      throw boom.notFound('Category not found');
     }
   }
 }

@@ -10,12 +10,14 @@ class UsersService {
   }
 
   async find() {
-    const res = await sequelize.models.User.findAll();
+    const res = await sequelize.models.User.findAll({ include: 'customer' });
     return res;
   }
 
   async findOne(id) {
-    const user = await sequelize.models.User.findByPk(id);
+    const user = await sequelize.models.User.findByPk(id, {
+      include: 'customer',
+    });
     if (user) {
       return user;
     } else {

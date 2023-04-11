@@ -5,7 +5,7 @@ import {
   findOneUserSchema,
   updateUserSchema,
   deleteUserSchema,
-} from '../schemas/users.scheme.js';
+} from '../schemas/users.schema.js';
 import { validationHandler } from '../middlewares/validations.handler.js';
 
 const usersRouter = express.Router();
@@ -74,7 +74,7 @@ usersRouter.delete(
     const { id } = req.params;
     try {
       await service.delete(id);
-      res.status(204).json({ message: 'Product deleted', data: id });
+      res.status(204).json({ message: 'User deleted', data: id });
     } catch (err) {
       next(err);
     }
